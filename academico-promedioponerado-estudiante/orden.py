@@ -1,0 +1,8 @@
+"Modifique el Sistema Académico para que en el controlador de "
+"Matrículas (MatriculaController) o de Estudiantes se agregue "
+"un método llamado calcular_promedio_estudiante(estudiante_id, "
+"materias_controller) que reciba el ID de un alumno y calcule su "
+"promedio de notas ponderado por los créditos de cada materia cursada."
+" Si el estudiante no tiene notas registradas o matrículas, debe "
+"retornar 0.0. Luego, agregue una opción en el menú de Estudiantes "
+"para mostrar este promedio en consola."
