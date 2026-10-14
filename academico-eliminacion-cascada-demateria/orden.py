@@ -1,0 +1,7 @@
+"Modifique el Sistema Académico para que, al eliminar una Materia de "
+"la base de datos (con su respectivo controlador), se ejecute una "
+"eliminación en cascada. Esto significa que el sistema debe buscar"
+" y eliminar automáticamente todas las matrículas asociadas a esa "
+"materia en el archivo JSON de matrículas para evitar registros"
+" huérfanos. Muestre cómo queda implementado en el controlador de "
+"materias."
