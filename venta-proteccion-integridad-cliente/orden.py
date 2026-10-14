@@ -1,0 +1,7 @@
+"Modifique el Sistema de Ventas para que, al intentar eliminar un "
+"Cliente de la base de datos, el controlador verifique primero si el "
+"cliente tiene facturas asociadas. Si registra facturas emitidas, el "
+"sistema debe prohibir su eliminación y retornar un mensaje de error"
+" que diga: 'No se puede eliminar al cliente porque registra facturas "
+"emitidas en el sistema'. Si no tiene facturas, debe permitir "
+"eliminarlo normalmente."
