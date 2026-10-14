@@ -1,0 +1,7 @@
+"Modifique el Sistema de Ventas para agregar una función en el "
+"controlador de Clientes llamada top_clientes_compradores(top_n=3)"
+" que consulte todas las facturas registradas, sume el total gastado "
+"por cada cliente y devuelva un ranking con los N clientes que más "
+"dinero han aportado al negocio. Añada una opción en el menú de "
+"Clientes en main.py para imprimir este reporte detallado en la "
+"consola."
