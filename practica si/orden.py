@@ -1,0 +1,6 @@
+"Modifique el Sistema Académico para que el costo de la matrícula ya "
+"no dependa únicamente de los créditos multiplicados por un valor fijo, sino "
+"que ahora exista una categoría de estudiante ('Beca Completa', 'Media Beca' o 'Regular'). "
+"Si el estudiante es 'Beca Completa', la matrícula es 100% gratuita ($0). Si es 'Media Beca', "
+"tiene un 50% de descuento. Además, agregue una validación que prohiba matricular a un estudiante "
+"en una materia si su cupo actual es menor o igual a 0, mostrando un mensaje de error claro en la consola."
