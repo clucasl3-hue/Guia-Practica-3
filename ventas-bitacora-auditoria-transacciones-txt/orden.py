@@ -1,0 +1,8 @@
+"Modifique el Sistema de Ventas para que, cada vez que se emita una "
+"factura con éxito en el controlador FacturaController, "
+"el sistema guarde automáticamente un registro en un archivo de "
+"texto externo llamado auditoria_ventas.txt dentro de la carpeta "
+"data/. El registro debe incluir la fecha actual, el ID de la factura,"
+" el cliente y el total pagado. Asimismo, agregue una opción en el "
+"menú de Facturas para Ver la Bitácora de Auditoría imprimiendo el "
+"contenido de ese archivo en la consola."
