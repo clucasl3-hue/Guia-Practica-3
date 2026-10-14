@@ -1,0 +1,8 @@
+"Modifique el Sistema de Ventas para que, en el controlador de "
+"productos (ProductoController), se agregue un método llamado "
+"actualizar_precios_masivo(porcentaje) que reciba un valor "
+"(por ejemplo, 10 para subir 10%, o -5 para bajar 5%) y recalcule "
+"automáticamente el precio unitario de todos los productos registrados"
+" en el catálogo, guardando los cambios en el archivo JSON. Añada una"
+" opción en el menú de Productos en main.py para ejecutar esta acción"
+" ingresando el porcentaje por teclado."
