@@ -1,0 +1,8 @@
+"Modifique el Sistema Académico para que en el controlador de Estudiantes"
+" (EstudianteController) se agregue un método llamado "
+"materias_del_estudiante(estudiante_id, matriculas_controller, "
+"materias_controller) que devuelva la lista de todas las materias "
+"en las que un estudiante específico se encuentra matriculado. Luego,"
+" agregue una opción en el menú de Estudiantes llamada 'Ver Materias "
+"del Estudiante' para imprimir dicho reporte en la "
+"consola."
