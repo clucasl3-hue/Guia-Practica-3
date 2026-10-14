@@ -1,0 +1,370 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Guía Magistral - 4 Casos Prácticos Académicos</title>
+    <style>
+        :root {
+            --bg-color: #0f172a;
+            --card-bg: #1e293b;
+            --accent-blue: #38bdf8;
+            --accent-yellow: #facc15;
+            --accent-green: #4ade80;
+            --accent-red: #f87171;
+            --text-main: #f8fafc;
+            --text-muted: #94a3b8;
+            --code-bg: #090d16;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            margin: 0;
+            padding: 20px;
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+
+        header {
+            text-align: center;
+            padding: 20px 0;
+            border-bottom: 2px solid #334155;
+            margin-bottom: 30px;
+        }
+
+        h1 {
+            color: var(--accent-blue);
+            margin-bottom: 5px;
+        }
+
+        .subtitle {
+            color: var(--text-muted);
+            font-size: 1.1em;
+        }
+
+        .card {
+            background-color: var(--card-bg);
+            border-radius: 10px;
+            padding: 25px;
+            margin-bottom: 35px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+            border-left: 6px solid var(--accent-blue);
+        }
+
+        .card.c1 { border-left-color: var(--accent-blue); }
+        .card.c2 { border-left-color: var(--accent-yellow); }
+        .card.c3 { border-left-color: var(--accent-green); }
+        .card.c4 { border-left-color: var(--accent-red); }
+
+        h2 {
+            margin-top: 0;
+            color: var(--text-main);
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-size: 1.35em;
+        }
+
+        .badge {
+            font-size: 0.75em;
+            padding: 4px 12px;
+            border-radius: 12px;
+            background: #334155;
+            color: var(--accent-blue);
+            font-weight: normal;
+        }
+
+        .step {
+            margin-bottom: 20px;
+            background: rgba(15, 23, 42, 0.6);
+            padding: 16px;
+            border-radius: 8px;
+            border: 1px solid #334155;
+        }
+
+        .step-title {
+            font-weight: bold;
+            color: var(--accent-blue);
+            margin-bottom: 8px;
+            display: block;
+        }
+
+        .file-tag {
+            background-color: #0284c7;
+            color: white;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-size: 0.85em;
+            font-family: monospace;
+        }
+
+        pre {
+            background-color: var(--code-bg);
+            padding: 15px;
+            border-radius: 6px;
+            overflow-x: auto;
+            border: 1px solid #1e293b;
+            color: #e2e8f0;
+            font-family: 'Consolas', 'Courier New', Courier, monospace;
+            font-size: 0.92em;
+        }
+
+        .hl {
+            color: var(--accent-green);
+            font-weight: bold;
+        }
+
+        .note {
+            background: #334155;
+            padding: 12px 18px;
+            border-radius: 6px;
+            font-size: 0.9em;
+            margin-top: 15px;
+            border-left: 4px solid var(--accent-yellow);
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <header>
+        <h1>Guía Magistral Examen Práctico</h1>
+        <div class="subtitle">4 Ideas Distintas de Examen en Proyecto Académico (Paso a Paso Completo)</div>
+    </header>
+
+    <!-- IDEA 1 -->
+    <div class="card c1">
+        <h2>IDEA 1: Nuevo Atributo en Estudiante <span class="badge">Atributo Edad/Teléfono</span></h2>
+        <p><strong>Escenario:</strong> Agregar el campo <code>edad</code> a la entidad Estudiante propagándolo desde Persona.</p>
+
+        <div class="step">
+            <span class="step-title">Paso 1: <span class="file-tag">models.py</span> (Padre e Hijo)</span>
+<pre><code># 1.1 Modificar Persona (Clase Padre)
+class Persona(ModeloBase):
+    def __init__(self, id_registro, nombre, apellido, email, <span class="hl">edad=0</span>):
+        super().__init__(id_registro)
+        self.nombre = nombre
+        self.apellido = apellido
+        self.email = email
+        <span class="hl">self.edad = int(edad)</span>
+
+    def a_diccionario(self):
+        datos = super().a_diccionario()
+        datos["nombre"] = self.nombre
+        datos["apellido"] = self.apellido
+        datos["email"] = self.email
+        <span class="hl">datos["edad"] = self.edad</span>
+        return datos
+
+# 1.2 Modificar Estudiante (Clase Hija)
+class Estudiante(Persona):
+    def __init__(self, id_registro, nombre, apellido, email, carnet="", carrera="", <span class="hl">edad=0</span>):
+        <span class="hl">super().__init__(id_registro, nombre, apellido, email, edad)</span>
+        self.carnet = carnet
+        self.carrera = carrera
+
+    def etiqueta(self):
+        return f"{super().etiqueta()} · <span class="hl">Edad: {self.edad} años</span> · {self.carnet} · {self.carrera}"
+</code></pre>
+        </div>
+
+        <div class="step">
+            <span class="step-title">Paso 2: <span class="file-tag">views.py</span> (EstudianteController)</span>
+<pre><code># En crear():
+estudiante = Estudiante(
+    self.siguiente(),
+    str(datos["nombre"]).strip().title(),
+    str(datos["apellido"]).strip().title(),
+    str(datos["email"]).strip().lower(),
+    str(datos.get("carnet", "")).strip().upper(),
+    str(datos.get("carrera", "")).strip().title(),
+    <span class="hl">int(datos.get("edad", 0))</span>
+)
+
+# En actualizar():
+desconocidos = set(datos) - {"nombre", "apellido", "email", "carnet", "carrera", <span class="hl">"edad"</span>}
+</code></pre>
+        </div>
+
+        <div class="step">
+            <span class="step-title">Paso 3: <span class="file-tag">main.py</span> (Entrada de usuario)</span>
+<pre><code># En crear_estudiante():
+datos = {
+    "nombre": input("Nombre: "),
+    "apellido": input("Apellido: "),
+    "email": input("Email: "),
+    "carnet": input("Carnet: "),
+    "carrera": input("Carrera: "),
+    <span class="hl">"edad": pedir_entero("Edad: ")</span>
+}
+
+# En actualizar_estudiante():
+for campo in ("nombre", "apellido", "email", "carnet", "carrera", <span class="hl">"edad"</span>):
+    # bucle habitual
+</code></pre>
+        </div>
+    </div>
+
+    <!-- IDEA 2 -->
+    <div class="card c2">
+        <h2>IDEA 2: Regla de Negocio en Matrícula <span class="badge">Estados Múltiples y Becas</span></h2>
+        <p><strong>Escenario:</strong> Definir 4 estados académicos según la nota (Aprobado Becado, Aprobado, Recuperación, Reprobado).</p>
+
+        <div class="step">
+            <span class="step-title">Paso 1: <span class="file-tag">models.py</span> (Lógica en Matricula)</span>
+<pre><code>class Matricula(ModeloBase):
+    def __init__(self, id_registro, estudiante_id, materia_id, periodo, nota=0.0):
+        super().__init__(id_registro)
+        self.estudiante_id = int(estudiante_id)
+        self.materia_id = int(materia_id)
+        self.periodo = periodo
+        self.nota = float(nota)
+
+    <span class="hl">def estado(self):
+        if self.nota >= 18.0:
+            return "Aprobado (Becado)"
+        elif self.nota >= 14.0:
+            return "Aprobado"
+        elif self.nota >= 10.0:
+            return "Recuperación"
+        else:
+            return "Reprobado"</span>
+
+    def etiqueta(self):
+        return f"Matrícula #{self.id} · Período: {self.periodo} · Nota: {self.nota} · <span class="hl">Estado: {self.estado()}</span>"
+</code></pre>
+        </div>
+
+        <div class="step">
+            <span class="step-title">Paso 2: <span class="file-tag">main.py</span> (Reporte Detallado de Rendimiento)</span>
+<pre><code>def resumen_rendimiento():
+    imprimir_titulo("RESUMEN GENERAL DE RENDIMIENTO")
+    m_lista = matriculas.leer()
+    
+    <span class="hl">becados = sum(1 for m in m_lista if m.estado() == "Aprobado (Becado)")
+    aprobados = sum(1 for m in m_lista if m.estado() == "Aprobado")
+    recuperacion = sum(1 for m in m_lista if m.estado() == "Recuperación")
+    reprobados = sum(1 for m in m_lista if m.estado() == "Reprobado")</span>
+
+    print(f"  Becados (>= 18)   : {becados}")
+    print(f"  Aprobados (>= 14) : {aprobados}")
+    print(f"  Recuperación      : {recuperacion}")
+    print(f"  Reprobados (< 10)  : {reprobados}")
+    pausa()
+</code></pre>
+        </div>
+    </div>
+
+    <!-- IDEA 3 -->
+    <div class="card c3">
+        <h2>IDEA 3: Filtro de Relaciones y Búsqueda <span class="badge">Estudiantes por Carrera</span></h2>
+        <p><strong>Escenario:</strong> Crear un reporte que extraiga y muestre únicamente los estudiantes inscritos en una carrera específica.</p>
+
+        <div class="step">
+            <span class="step-title">Paso 1: <span class="file-tag">views.py</span> (EstudianteController)</span>
+<pre><code>class EstudianteController(ControllerBase):
+    # ... métodos de controlador ...
+
+    <span class="hl">def obtener_por_carrera(self, carrera_buscada):
+        """Devuelve los estudiantes pertenecientes a la carrera ingresada."""
+        carrera_buscada = carrera_buscada.strip().lower()
+        return [e for e in self.lista if e.carrera.lower() == carrera_buscada]</span>
+</code></pre>
+        </div>
+
+        <div class="step">
+            <span class="step-title">Paso 2: <span class="file-tag">main.py</span> (Submenú de Filtro)</span>
+<pre><code># 2.1 Función de pantalla
+<span class="hl">def listar_estudiantes_carrera():
+    imprimir_titulo("FILTRAR ESTUDIANTES POR CARRERA")
+    carrera = input("Ingrese el nombre de la carrera: ")
+    resultados = estudiantes.obtener_por_carrera(carrera)
+    mostrar_lista(resultados, f"No se encontraron estudiantes en la carrera '{carrera}'.")
+    pausa()</span>
+
+# 2.2 Agregar al diccionario MENU_ESTUDIANTES
+MENU_ESTUDIANTES = {
+    "1": ("Registrar estudiante", crear_estudiante),
+    "2": ("Ver todos", listar_estudiantes),
+    <span class="hl">"3": ("Buscar por carrera", listar_estudiantes_carrera),</span>  # <--- NUEVA OPCIÓN
+    "4": ("Actualizar estudiante", actualizar_estudiante),
+    "0": ("Volver", None),
+}
+</code></pre>
+        </div>
+    </div>
+
+    <!-- IDEA 4 -->
+    <div class="card c4">
+        <h2>IDEA 4: Modificación de Atributo con Validación <span class="badge">Créditos en Materia</span></h2>
+        <p><strong>Escenario:</strong> Agregar el campo <code>creditos</code> a Materia asegurando que solo acepte enteros mayores a cero.</p>
+
+        <div class="step">
+            <span class="step-title">Paso 1: <span class="file-tag">models.py</span> (Materia)</span>
+<pre><code>class Materia(ModeloBase):
+    def __init__(self, id_registro, nombre, codigo, <span class="hl">creditos=3</span>):
+        super().__init__(id_registro)
+        self.nombre = nombre
+        self.codigo = codigo
+        <span class="hl">self.creditos = int(creditos)</span>
+
+    def a_diccionario(self):
+        datos = super().a_diccionario()
+        datos["nombre"] = self.nombre
+        datos["codigo"] = self.codigo
+        <span class="hl">datos["creditos"] = self.creditos</span>
+        return datos
+
+    def etiqueta(self):
+        return f"{self.codigo} - {self.nombre} · <span class="hl">{self.creditos} Créditos</span>"
+</code></pre>
+        </div>
+
+        <div class="step">
+            <span class="step-title">Paso 2: <span class="file-tag">views.py</span> (MateriaController)</span>
+<pre><code>class MateriaController(ControllerBase):
+    def validar(self, datos, id_actual=None):
+        # Validaciones de nombre y código...
+        
+        <span class="hl"># Validar créditos positivos
+        if "creditos" in datos:
+            try:
+                val = int(datos["creditos"])
+                if val <= 0:
+                    return "Los créditos deben ser mayores a 0"
+            except ValueError:
+                return "Los créditos deben ser un número entero válido"</span>
+        return None
+</code></pre>
+        </div>
+
+        <div class="step">
+            <span class="step-title">Paso 3: <span class="file-tag">main.py</span></span>
+<pre><code># En crear_materia():
+datos = {
+    "nombre": input("Nombre: "),
+    "codigo": input("Código: "),
+    <span class="hl">"creditos": pedir_entero("Créditos: ")</span>
+}
+</code></pre>
+        </div>
+    </div>
+
+    <div class="note">
+        <strong> Puntos Críticos a Recordar en Proyecto Académico:</strong>
+        <ul>
+            <li><strong>Manejo de Heredados:</strong> Si agregas `edad` o `telefono` a `Estudiante`, pásalo por `super().__init__()` hacia `Persona`.</li>
+            <li><strong>Diccionario de Opciones:</strong> Si agregas un filtro, recuerda vincular la función al diccionario `MENU_ESTUDIANTES`, `MENU_MATERIAS` o `MENU_MATRICULAS`.</li>
+            <li><strong>Valores por Defecto:</strong> Asigna valores iniciales (`creditos=3`, `edad=0`) en las firmas de `__init__` para compatibilidad con registros antiguos del JSON.</li>
+        </ul>
+    </div>
+</div>
+
+</body>
+</html>
