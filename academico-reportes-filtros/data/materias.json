@@ -1,0 +1,9 @@
+[
+  {
+    "id": 1,
+    "nombre": "Matematicas",
+    "codigo": "MAT-130",
+    "creditos": 30,
+    "cupos": 33
+  }
+]
