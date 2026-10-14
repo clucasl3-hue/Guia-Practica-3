@@ -1,0 +1,354 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Guía Magistral - 4 Casos Prácticos de Ventas</title>
+    <style>
+        :root {
+            --bg-color: #0f172a;
+            --card-bg: #1e293b;
+            --accent-blue: #38bdf8;
+            --accent-yellow: #facc15;
+            --accent-green: #4ade80;
+            --accent-red: #f87171;
+            --text-main: #f8fafc;
+            --text-muted: #94a3b8;
+            --code-bg: #090d16;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            margin: 0;
+            padding: 20px;
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+
+        header {
+            text-align: center;
+            padding: 20px 0;
+            border-bottom: 2px solid #334155;
+            margin-bottom: 30px;
+        }
+
+        h1 {
+            color: var(--accent-blue);
+            margin-bottom: 5px;
+        }
+
+        .subtitle {
+            color: var(--text-muted);
+            font-size: 1.1em;
+        }
+
+        .card {
+            background-color: var(--card-bg);
+            border-radius: 10px;
+            padding: 25px;
+            margin-bottom: 35px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+            border-left: 6px solid var(--accent-blue);
+        }
+
+        .card.c1 { border-left-color: var(--accent-blue); }
+        .card.c2 { border-left-color: var(--accent-yellow); }
+        .card.c3 { border-left-color: var(--accent-green); }
+        .card.c4 { border-left-color: var(--accent-red); }
+
+        h2 {
+            margin-top: 0;
+            color: var(--text-main);
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-size: 1.35em;
+        }
+
+        .badge {
+            font-size: 0.75em;
+            padding: 4px 12px;
+            border-radius: 12px;
+            background: #334155;
+            color: var(--accent-blue);
+            font-weight: normal;
+        }
+
+        .step {
+            margin-bottom: 20px;
+            background: rgba(15, 23, 42, 0.6);
+            padding: 16px;
+            border-radius: 8px;
+            border: 1px solid #334155;
+        }
+
+        .step-title {
+            font-weight: bold;
+            color: var(--accent-blue);
+            margin-bottom: 8px;
+            display: block;
+        }
+
+        .file-tag {
+            background-color: #0284c7;
+            color: white;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-size: 0.85em;
+            font-family: monospace;
+        }
+
+        pre {
+            background-color: var(--code-bg);
+            padding: 15px;
+            border-radius: 6px;
+            overflow-x: auto;
+            border: 1px solid #1e293b;
+            color: #e2e8f0;
+            font-family: 'Consolas', 'Courier New', Courier, monospace;
+            font-size: 0.92em;
+        }
+
+        .hl {
+            color: var(--accent-green);
+            font-weight: bold;
+        }
+
+        .note {
+            background: #334155;
+            padding: 12px 18px;
+            border-radius: 6px;
+            font-size: 0.9em;
+            margin-top: 15px;
+            border-left: 4px solid var(--accent-yellow);
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <header>
+        <h1>Guía Magistral Examen Práctico</h1>
+        <div class="subtitle">4 Ideas Distintas de Examen en Proyecto Ventas (Paso a Paso Completo)</div>
+    </header>
+
+    <!-- IDEA 1 -->
+    <div class="card c1">
+        <h2>IDEA 1: Nuevo Atributo en Entidad Heredada <span class="badge">Atributo en Cliente</span></h2>
+        <p><strong>Escenario:</strong> El profesor pide agregar el campo <code>telefono</code> al registro de clientes.</p>
+
+        <div class="step">
+            <span class="step-title">Paso 1: <span class="file-tag">models.py</span> (Atributo en Padre e Hijo)</span>
+<pre><code># 1.1 Agregar 'telefono=""' en el Padre (Persona)
+class Persona(ModeloBase):
+    def __init__(self, id_registro, nombre, apellido, email, <span class="hl">telefono=""</span>):
+        super().__init__(id_registro)
+        self.nombre = nombre
+        self.apellido = apellido
+        self.email = email
+        <span class="hl">self.telefono = telefono</span>
+
+    def a_diccionario(self):
+        datos = super().a_diccionario()
+        # ... nombre, apellido, email ...
+        <span class="hl">datos["telefono"] = self.telefono</span>
+        return datos
+
+# 1.2 Pasarlo en el Hijo (Cliente) mediante super()
+class Cliente(Persona):
+    def __init__(self, id_registro, nombre, apellido, email, cedula="", direccion="", <span class="hl">telefono=""</span>):
+        <span class="hl">super().__init__(id_registro, nombre, apellido, email, telefono)</span>
+        self.cedula = cedula
+        self.direccion = direccion
+
+    def etiqueta(self):
+        return f"{super().etiqueta()} · Cédula: {self.cedula} <span class="hl">· Tel: {self.telefono}</span>"
+</code></pre>
+        </div>
+
+        <div class="step">
+            <span class="step-title">Paso 2: <span class="file-tag">views.py</span> (Extracción y Registro de Campos Válidos)</span>
+<pre><code># En ClienteController.crear():
+cliente = Cliente(
+    self.siguiente(),
+    str(datos["nombre"]).strip().title(),
+    str(datos["apellido"]).strip().title(),
+    str(datos["email"]).strip().lower(),
+    str(datos.get("cedula", "")).strip(),
+    str(datos.get("direccion", "")).strip().title(),
+    <span class="hl">str(datos.get("telefono", "")).strip()</span>  # Explicación: Evita KeyError si no viene en el dict
+)
+
+# En ClienteController.actualizar():
+# IMPORTANTE: Agregar 'telefono' al conjunto para que no lo detecte como campo desconocido
+desconocidos = set(datos) - {"nombre", "apellido", "email", "cedula", "direccion", <span class="hl">"telefono"</span>}
+</code></pre>
+        </div>
+
+        <div class="step">
+            <span class="step-title">Paso 3: <span class="file-tag">main.py</span> (Petición en Consola)</span>
+<pre><code># En crear_cliente():
+datos = {
+    "nombre": input("Nombre: "),
+    "apellido": input("Apellido: "),
+    "email": input("Email: "),
+    "cedula": input("Cédula: "),
+    "direccion": input("Dirección: "),
+    <span class="hl">"telefono": input("Teléfono: ")</span>
+}
+
+# En actualizar_cliente():
+for campo in ("nombre", "apellido", "email", "cedula", "direccion", <span class="hl">"telefono"</span>):
+    # bucle habitual de actualización
+</code></pre>
+        </div>
+    </div>
+
+    <!-- IDEA 2 -->
+    <div class="card c2">
+        <h2>IDEA 2: Modificación de Regla de Negocio Comercial <span class="badge">Descuento Automático</span></h2>
+        <p><strong>Escenario:</strong> Aplicar 10% de descuento automático en compras mayores a $100 y reflejarlo en reportes.</p>
+
+        <div class="step">
+            <span class="step-title">Paso 1: <span class="file-tag">models.py</span> (Cálculo Dinámico en Venta)</span>
+<pre><code>class Venta(ModeloBase):
+    def __init__(self, id_registro, cliente_id, producto_id, cantidad, precio_unitario):
+        super().__init__(id_registro)
+        self.cliente_id = int(cliente_id)
+        self.producto_id = int(producto_id)
+        self.cantidad = int(cantidad)
+        self.precio_unitario = float(precio_unitario)
+
+    def subtotal(self):
+        return round(self.cantidad * self.precio_unitario, 2)
+
+    <span class="hl">def total(self):
+        monto = self.subtotal()
+        # Regla de negocio: Si supera los $100, aplica 10% de descuento
+        if monto > 100.0:
+            return round(monto * 0.90, 2)
+        return monto</span>
+
+    def etiqueta(self):
+        return f"Venta #{self.id} · Cant: {self.cantidad} · Subtotal: ${self.subtotal():.2f} · <span class="hl">Total Final: ${self.total():.2f}</span>"
+</code></pre>
+        </div>
+
+        <div class="step">
+            <span class="step-title">Paso 2: <span class="file-tag">main.py</span> (Reporte de Facturación Acumulada)</span>
+<pre><code>def resumen_ventas():
+    imprimir_titulo("RESUMEN DE FACTURACIÓN CON DESCUENTOS")
+    lista_ventas = ventas.leer()
+    
+    <span class="hl"># Se calcula el gran total llamando a v.total() de cada objeto
+    monto_total = sum(v.total() for v in lista_ventas)
+    descuento_otorgado = sum(v.subtotal() - v.total() for v in lista_ventas)</span>
+
+    print(f"  Ventas realizadas  : {len(lista_ventas)}")
+    print(f"  Monto Total Cobrado: ${monto_total:.2f}")
+    print(f"  Descuentos Aplicados: ${descuento_otorgado:.2f}")
+    pausa()
+</code></pre>
+        </div>
+    </div>
+
+    <!-- IDEA 3 -->
+    <div class="card c3">
+        <h2>IDEA 3: Comunicación de Controladores / Devolución de Stock <span class="badge">Anular Venta</span></h2>
+        <p><strong>Escenario:</strong> Al anular una venta, el sistema debe devolver las unidades vendidas al stock del Producto.</p>
+
+        <div class="step">
+            <span class="step-title">Paso 1: <span class="file-tag">views.py</span> (Interacción entre VentaController y ProductoController)</span>
+<pre><code>class VentaController(ControllerBase):
+    def __init__(self, cliente_controller, producto_controller):
+        super().__init__("ventas.json", Venta)
+        self.cliente_controller = cliente_controller
+        <span class="hl">self.producto_controller = producto_controller</span>  # Referencia al controlador de Productos
+
+    def anular_venta(self, id_venta):
+        venta = self.obtener(id_venta)
+        if venta is None:
+            return False, f"No existe la venta #{id_venta}"
+
+        <span class="hl"># 1. Buscar el producto involucrado
+        producto = self.producto_controller.obtener(venta.producto_id)
+        if producto:
+            # 2. Reintegrar las unidades al stock del Producto
+            producto.stock += venta.cantidad
+            self.producto_controller.guardar()  # Guardar cambios en productos.json</span>
+
+        # 3. Remover la venta y guardar cambios en ventas.json
+        self.lista.remove(venta)
+        self.guardar()
+        return True, f"Venta #{id_venta} anulada. Stock devuelto (+{venta.cantidad} unids)."
+</code></pre>
+        </div>
+
+        <div class="step">
+            <span class="step-title">Paso 2: <span class="file-tag">main.py</span> (Llamada desde la Interfaz)</span>
+<pre><code>def anular_venta_menu():
+    imprimir_titulo("ANULAR VENTA")
+    id_v = pedir_entero("ID de la Venta a anular: ")
+    <span class="hl"># Se llama al nuevo método del controlador
+    exito, mensaje = ventas.anular_venta(id_v)
+    mostrar_resultado(exito, mensaje)</span>
+    pausa()
+</code></pre>
+        </div>
+    </div>
+
+    <!-- IDEA 4 -->
+    <div class="card c4">
+        <h2>IDEA 4: Nuevo Filtro Avanzado en la Interfaz <span class="badge">Filtro por Criterio</span></h2>
+        <p><strong>Escenario:</strong> Crear una opción de menú que liste productos por agotarse (stock &le; 5) o por Categoría.</p>
+
+        <div class="step">
+            <span class="step-title">Paso 1: <span class="file-tag">views.py</span> (Método de Filtrado en ProductoController)</span>
+<pre><code>class ProductoController(ControllerBase):
+    # ... métodos crear, actualizar ...
+
+    <span class="hl">def obtener_agotandose(self, limite=5):
+        """Devuelve únicamente los productos cuyo stock sea menor o igual al límite."""
+        return [p for p in self.lista if p.stock <= limite]</span>
+</code></pre>
+        </div>
+
+        <div class="step">
+            <span class="step-title">Paso 2: <span class="file-tag">main.py</span> (Conectar Vista y Menú Despachador)</span>
+<pre><code># 2.1 Crear la función de pantalla
+<span class="hl">def listar_productos_criticos():
+    imprimir_titulo("PRODUCTOS CON BAJO STOCK (<= 5 UNIDADES)")
+    lista_critica = productos.obtener_agotandose(limite=5)
+    mostrar_lista(lista_critica, "No hay productos en estado crítico.")
+    pausa()</span>
+
+# 2.2 Agregar la opción dentro del diccionario del Menú de Productos
+MENU_PRODUCTOS = {
+    "1": ("Registrar producto", crear_producto),
+    "2": ("Ver todos los productos", listar_productos),
+    <span class="hl">"3": ("Ver productos por agotarse", listar_productos_criticos),</span>  # <--- NUEVA OPCIÓN
+    "4": ("Actualizar producto", actualizar_producto),
+    "0": ("Volver al menú principal", None),
+}
+</code></pre>
+        </div>
+    </div>
+
+    <div class="note">
+        <strong> Recordatorios Clave para el Día del Examen:</strong>
+        <ul>
+            <li><strong>Si agregas un atributo en `Cliente`:</strong> Siempre modifica primero el constructor de `Persona` para evitar `TypeError`.</li>
+            <li><strong>Si editas datos y se borran campos:</strong> Verifica que en `actualizar()` hayas agregado la clave al conjunto de campos permitidos `set(datos) - {...}`.</li>
+            <li><strong>Mantenimiento de relaciones:</strong> Si borras/anulas un registro hijo (`Venta`), recuerda actualizar el padre (`Producto`) si la regla de negocio lo exige.</li>
+        </ul>
+    </div>
+</div>
+
+</body>
+</html>
